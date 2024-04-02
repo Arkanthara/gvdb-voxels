@@ -33,13 +33,13 @@ set ( REQUIRE_TGA "1" )
 set ( REQUIRE_GLEW "1" )
 set ( REQUIRE_MAIN "1" )
 set ( REQUIRE_NVGUI "1" )
-set ( REQUIRE_OPTIX "1" )
+# set ( REQUIRE_OPTIX "1" )
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/../sample_utils")
 find_package(Utils REQUIRED)
 
 # Find OptiX
-find_package(Optix REQUIRED)
+# find_package(Optix REQUIRED)
 
 
 #---------------------------------------------------------------------PTX files
@@ -73,7 +73,9 @@ target_sources(${PROJECT_NAME_APP}
             fluid.cpp
             fluid.h
             fluid_system.cpp
-            fluid_system.h)
+            fluid_system.h
+            optixscene_moch.cpp
+            optixscene_moch.h)
 
 # Then add the utils and OptiX files and kernels to the list of source files to build:
 target_sources(${PROJECT_NAME_APP}
@@ -91,8 +93,9 @@ target_link_libraries(${PROJECT_NAME_APP} PUBLIC gvdb)
 add_dependencies(${PROJECT_NAME_APP} gvdbCopy)
  
 # Add OptiX's libraries to the build:
-add_definitions(-DUSE_OPTIX)
-add_definitions(-DBUILD_OPTIX)
+# add_definitions(-DUSE_OPTIX)
+add_definitions(-DUSE_GVDB)
+# add_definitions(-DBUILD_OPTIX)
 target_link_libraries(${PROJECT_NAME_APP} PUBLIC ${OPTIX_LIB} ${OPTIX_LIBU})
 # Add OptiX's include file directory to the search paths:
 target_include_directories(${PROJECT_NAME_APP} PRIVATE "${OPTIX_ROOT_DIR}/include")

@@ -22,6 +22,8 @@ using namespace nvdb;
 #ifdef USE_OPTIX
 	// OptiX scene
 	#include "optix_scene.h"
+#else
+	#include "optixscene_moch.h"
 #endif
 
 //#define USE_CPU_COPY		// by default use data already on GPU (no CPU copy)
@@ -56,6 +58,7 @@ public:
 #ifdef USE_OPTIX
 	OptixScene  optx;
 #endif
+	OptixScene optx;
 
 	Vector3DF	m_origin;
 	float		m_radius;
@@ -120,70 +123,72 @@ void Sample::start_guis (int w, int h)
 
 void Sample::RebuildOptixGraph ()
 {
-	char filepath[1024];
+	#ifdef USE_OPTIX
+		char filepath[1024];
 
-	optx.ClearGraph();
+		optx.ClearGraph();
 
-	if ( gvdb.FindFile ( "sky.png", filepath) )
-		optx.CreateEnvmap ( filepath );
+		if ( gvdb.FindFile ( "sky.png", filepath) )
+			optx.CreateEnvmap ( filepath );
 
-	m_mat_surf1 = optx.AddMaterial("optix_trace_surface", "trace_surface", "trace_shadow");		
-	MaterialParams* matp = optx.getMaterialParams( m_mat_surf1 );
-	matp->light_width = 1.2f;
-	matp->shadow_width = 0.1f;
-	matp->shadow_bias = 0.5f;
-	matp->amb_color = Vector3DF(.05f, .05f, .05f);
-	matp->diff_color = Vector3DF(.7f, .7f, .7f);
-	matp->spec_color = Vector3DF(1.f, 1.f, 1.f);
-	matp->spec_power = 400.0;
-	matp->env_color = Vector3DF(0.f, 0.f, 0.f);
-	matp->refl_width = 0.5f;
-	matp->refl_bias = 0.5f;
-	matp->refl_color = Vector3DF(0.4f, 0.4f, 0.4f);
-	
-	matp->refr_width = 0.0f;
-	matp->refr_color = Vector3DF(0.1f, .1f, .1f);
-	matp->refr_ior = 1.1f;
-	matp->refr_amount = 0.5f;
-	matp->refr_offset = 50.0f;
-	matp->refr_bias = 0.5f;
-	optx.SetMaterialParams( m_mat_surf1, matp );
+		m_mat_surf1 = optx.AddMaterial("optix_trace_surface", "trace_surface", "trace_shadow");		
+		MaterialParams* matp = optx.getMaterialParams( m_mat_surf1 );
+		matp->light_width = 1.2f;
+		matp->shadow_width = 0.1f;
+		matp->shadow_bias = 0.5f;
+		matp->amb_color = Vector3DF(.05f, .05f, .05f);
+		matp->diff_color = Vector3DF(.7f, .7f, .7f);
+		matp->spec_color = Vector3DF(1.f, 1.f, 1.f);
+		matp->spec_power = 400.0;
+		matp->env_color = Vector3DF(0.f, 0.f, 0.f);
+		matp->refl_width = 0.5f;
+		matp->refl_bias = 0.5f;
+		matp->refl_color = Vector3DF(0.4f, 0.4f, 0.4f);
 
-	// Add GVDB volume to the OptiX scene
-	nvprintf("Adding GVDB Volume to OptiX graph.\n");
-	// Get the dimensions of the volume by looking at how the fluid system was
-	// initialized (since at this moment, gvdb.getVolMin and gvdb.getVolMax
-	// are both 0).
-	Vector3DF volmin = fluid.GetGridMin();
-	Vector3DF volmax = fluid.GetGridMax();
-	Matrix4F xform = gvdb.getTransform();
-	int atlas_glid = gvdb.getAtlasGLID(0);
-	optx.AddVolume( atlas_glid, volmin, volmax, xform, m_mat_surf1, 'L' );		
+		matp->refr_width = 0.0f;
+		matp->refr_color = Vector3DF(0.1f, .1f, .1f);
+		matp->refr_ior = 1.1f;
+		matp->refr_amount = 0.5f;
+		matp->refr_offset = 50.0f;
+		matp->refr_bias = 0.5f;
+		optx.SetMaterialParams( m_mat_surf1, matp );
 
-	// Ground polygons
-	if ( gvdb.FindFile ( "ground.obj", filepath) ) {
-		Model* m;
-		gvdb.getScene()->AddModel ( filepath, 1.0, 0, 0, 0 );	
-		m = gvdb.getScene()->getModel ( 0 );	
-		xform.RotateZ ( 5 );
-		xform.PreTranslate ( Vector3DF(0, 10, 0) );		
-		optx.AddPolygons ( m, m_mat_surf1, xform );
-	}
+		// Add GVDB volume to the OptiX scene
+		nvprintf("Adding GVDB Volume to OptiX graph.\n");
+		// Get the dimensions of the volume by looking at how the fluid system was
+		// initialized (since at this moment, gvdb.getVolMin and gvdb.getVolMax
+		// are both 0).
+		Vector3DF volmin = fluid.GetGridMin();
+		Vector3DF volmax = fluid.GetGridMax();
+		Matrix4F xform = gvdb.getTransform();
+		int atlas_glid = gvdb.getAtlasGLID(0);
+		optx.AddVolume( atlas_glid, volmin, volmax, xform, m_mat_surf1, 'L' );		
 
-	// Set Transfer Function (once before validate)
-	Vector4DF* src = gvdb.getScene()->getTransferFunc();
-	optx.SetTransferFunc(src);
+		// Ground polygons
+		if ( gvdb.FindFile ( "ground.obj", filepath) ) {
+			Model* m;
+			gvdb.getScene()->AddModel ( filepath, 1.0, 0, 0, 0 );	
+			m = gvdb.getScene()->getModel ( 0 );	
+			xform.RotateZ ( 5 );
+			xform.PreTranslate ( Vector3DF(0, 10, 0) );		
+			optx.AddPolygons ( m, m_mat_surf1, xform );
+		}
 
-	// Validate OptiX graph
-	nvprintf("Validating OptiX.\n");
-	optx.ValidateGraph();
+		// Set Transfer Function (once before validate)
+		Vector4DF* src = gvdb.getScene()->getTransferFunc();
+		optx.SetTransferFunc(src);
 
-	// Assign GVDB data to OptiX	
-	nvprintf("Update GVDB Volume.\n");
-	optx.UpdateVolume(&gvdb);
+		// Validate OptiX graph
+		nvprintf("Validating OptiX.\n");
+		optx.ValidateGraph();
 
-	nvprintf("Rebuild Optix.. Done.\n");
-}
+		// Assign GVDB data to OptiX	
+		nvprintf("Update GVDB Volume.\n");
+		optx.UpdateVolume(&gvdb);
+
+		nvprintf("Rebuild Optix.. Done.\n");
+	#endif
+}	
 
 bool Sample::init() 
 {
