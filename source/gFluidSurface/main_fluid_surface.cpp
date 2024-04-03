@@ -201,7 +201,7 @@ bool Sample::init()
 	m_show_fluid = false;
 	m_show_topo = false;
 	m_use_color = true;
-	m_render_optix = true;
+	m_render_optix = false;
 	m_shade_style = 1;
 	m_frame = 0;
 	m_sample = 0;

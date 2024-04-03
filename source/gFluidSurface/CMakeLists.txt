@@ -110,7 +110,10 @@ target_compile_definitions(${PROJECT_NAME_APP}
 
 #------------------------------------------------------------------shared files
 # These are run every time the main project is built:
-add_custom_target(${PROJECT_NAME} ALL DEPENDS copiedPTX.stamp copiedOptiX.stamp copiedGVDB.stamp)
+add_custom_target(${PROJECT_NAME} ALL DEPENDS
+    copiedPTX.stamp
+    # copiedOptiX.stamp
+    copiedGVDB.stamp)
 # Tell Visual Studio how to start the application:
 set_target_properties(${PROJECT_NAME} PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY $<TARGET_FILE_DIR:${PROJECT_NAME_APP}>

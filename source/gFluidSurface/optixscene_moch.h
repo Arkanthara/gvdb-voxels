@@ -6,7 +6,7 @@ using namespace nvdb;
 
 typedef struct MaterialParams {
     int hello;
-};
+}MaterialParams;
 
 class OptixScene {
     public:
