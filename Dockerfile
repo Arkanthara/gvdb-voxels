@@ -14,14 +14,18 @@ RUN apt-get update && apt-get install -y \
         libxext-dev \
         libxrandr-dev \
         libxcursor-dev \
-        libvulkan-dev
+        libvulkan-dev \
+	xauth
 
 
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES all
-ENV NVIDIA_REQUIRE_CUDA "cuda>=12.4 brand=tesla,driver>=550"
+# ENV NVIDIA_VISIBLE_DEVICES all
+# ENV NVIDIA_DRIVER_CAPABILITIES all
+# ENV NVIDIA_REQUIRE_CUDA "cuda>=12.4 brand=tesla,driver>=550"
 
 # RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/compat" >> ~/.bashrc
+
+RUN touch /root/.Xauthority
+RUN xauth add muguet/unix:11  MIT-MAGIC-COOKIE-1  90aec646ba8f3d39d6b04ba23f1323ce 
 
 COPY . ~/gvdb-voxels
 
