@@ -147,18 +147,30 @@ void FluidSystem::Start ( int num )
 	mNumPoints = 0;			// reset count
 	
 	SetupDefaultParams ();	
-	SetupExampleParams ();	
+	// SetupExampleParams ();	
 	m_Param[PNUM] = (float) num;	// maximum number of points
 	mMaxPoints = num;
 
-	m_Param [PGRIDSIZE] = 2*m_Param[PSMOOTHRADIUS] / m_Param[PGRID_DENSITY];	
+	m_Param [PGRIDSIZE] = 2*m_Param[PSMOOTHRADIUS] / m_Param[PGRID_DENSITY];
+	m_Param [PFORCE_FREQ] = 0;
+	m_Param [PFORCE_MAX] = 0;
+	m_Param [PFORCE_MIN] = 0;
+
+	m_Vec [PVOLMIN].Set(0, 0, 0);
+	m_Vec [PVOLMAX].Set(100, 100, 100);
+
+	m_Vec [PINITMIN].Set(0, 0, 0);
+	m_Vec [PINITMAX].Set(100, 50, 100);
 
 	// Setup stuff
 	SetupKernels ();
+
+	m_Param[ PSPACING ] = 0.0f;
 	
 	SetupSpacing ();
 
 	SetupGrid ( m_Vec[PVOLMIN], m_Vec[PVOLMAX], m_Param[PSIMSCALE], m_Param[PGRIDSIZE], 1.0f );	// Setup grid
+	// SetupGrid( Vector3DF(-50, -50, -50), Vector3DF(50, 50, 50), m_Param[PSIMSCALE], m_Param[PGRIDSIZE], 1.0f);
 		
 	FluidSetupCUDA ( mMaxPoints, m_GridSrch, *(int3*)& m_GridRes, *(float3*)& m_GridSize, *(float3*)& m_GridDelta, *(float3*)& m_GridMin, *(float3*)& m_GridMax, m_GridTotal, 0 );
 
@@ -170,7 +182,74 @@ void FluidSystem::Start ( int num )
 	AllocateGrid();
 
 	// Create the particles (after allocate)
+	// SetupAddVolume(Vector3DF(-50, -50, -50), Vector3DF(50, 50, 50), m_Param[PSPACING], 0.1f, (int)m_Param[PNUM]);
 	SetupAddVolume(m_Vec[PINITMIN], m_Vec[PINITMAX], m_Param[PSPACING], 0.1f, (int)m_Param[PNUM]);		// increases mNumPoints
+
+	// Compute new number of particles
+	int new_number = (int)(
+					 (m_Vec[PINITMAX].x - m_Vec[PINITMIN].x)
+				   * (m_Vec[PINITMAX].y - m_Vec[PINITMIN].y)
+				   * (m_Vec[PINITMAX].z - m_Vec[PINITMIN].z)
+				   / m_Param[PNUM]
+				   );
+
+	SetupAddVolume(Vector3DF(40, 60, 40), Vector3DF(60, 80, 60), m_Param[PSPACING], 0.1f, new_number);
+
+	std::cout << "PGRIDSIZE			" << m_Param[PGRIDSIZE] << std::endl;
+	std::cout << "PGRID_DENSITY		" << m_Param[PGRID_DENSITY] << std::endl;
+	std::cout << "PSPACING			" << m_Param[PSPACING] << std::endl;
+	std::cout << "PNUM			" << m_Param[PNUM] << std::endl;
+	std::cout << "PSIMSCALE			" << m_Param[PSIMSCALE] << std::endl;
+
+	std::cout << "PFORCE_FREQ		" << m_Param[PFORCE_FREQ] << std::endl;
+	std::cout << "PFORCE_MAX		" << m_Param[PFORCE_MAX] << std::endl;
+	std::cout << "PFORCE_MIN		" << m_Param[PFORCE_MIN] << std::endl;
+
+	std::cout << "PSIMSCALE			" << m_Param[PSIMSCALE] << std::endl;
+	std::cout << "PSMOOTHRADIUS		" << m_Param[PSMOOTHRADIUS] << std::endl;
+	std::cout << "PRADIUS			" << m_Param[PRADIUS] << std::endl;
+	std::cout << "PMASS			" << m_Param[PMASS] << std::endl;
+	std::cout << "PRESTDENSITY		" << m_Param[PRESTDENSITY] << std::endl;
+
+	std::cout << "PEXTSTIFF			" << m_Param[PEXTSTIFF] << std::endl;
+	std::cout << "PINTSTIFF			" << m_Param[PINTSTIFF] << std::endl;
+	std::cout << "PVISC			" << m_Param[PVISC] << std::endl;
+	std::cout << "PEXTDAMP 			" << m_Param[PEXTDAMP] << std::endl;
+	std::cout << "PFORCE_MIN		" << m_Param[PFORCE_MIN] << std::endl;
+	std::cout << "PFORCE_MAX		" << m_Param[PFORCE_MAX] << std::endl;
+	std::cout << "PFORCE_FREQ		" << m_Param[PFORCE_FREQ]  << std::endl;
+	std::cout << "PGROUND_SLOPE		" << m_Param[PGROUND_SLOPE] << std::endl;
+	std::cout << "PACCEL_LIMIT		" << m_Param[PACCEL_LIMIT] << std::endl;
+	std::cout << "PVEL_LIMIT		" << m_Param[PVEL_LIMIT] << std::endl;
+	std::cout << "PEMIT_RATE		" << m_Vec[PEMIT_RATE].x << std::endl;
+	std::cout << "PGRAV			" << m_Param[PGRAV] << std::endl;
+
+	std::cout << "PBOUNDMIN.x		" << m_Vec[PBOUNDMIN].x << std::endl;
+	std::cout << "PBOUNDMIN.y		" << m_Vec[PBOUNDMIN].y << std::endl;
+	std::cout << "PBOUNDMIN.z		" << m_Vec[PBOUNDMIN].z << std::endl;
+	std::cout << "PBOUNDMAX.x		" << m_Vec[PBOUNDMAX].x << std::endl;
+	std::cout << "PBOUNDMAX.y		" << m_Vec[PBOUNDMAX].y << std::endl;
+	std::cout << "PBOUNDMAX.z		" << m_Vec[PBOUNDMAX].z << std::endl;
+	std::cout << "grav.x			" << (m_Vec[PPLANE_GRAV_DIR] * m_Param[PGRAV]).x << std::endl;
+	std::cout << "grav.y			" << (m_Vec[PPLANE_GRAV_DIR] * m_Param[PGRAV]).y << std::endl;
+	std::cout << "grav.z			" << (m_Vec[PPLANE_GRAV_DIR] * m_Param[PGRAV]).z << std::endl;
+	std::cout << "PPLANE_GRAV_DIR.x		" << m_Vec[PPLANE_GRAV_DIR].x << std::endl;
+	std::cout << "PPLANE_GRAV_DIR.y		" << m_Vec[PPLANE_GRAV_DIR].y << std::endl;
+	std::cout << "PPLANE_GRAV_DIR.z		" << m_Vec[PPLANE_GRAV_DIR].z << std::endl;
+
+	std::cout << "PVOLMIN.x			" << m_Vec[PVOLMIN].x << std::endl;
+	std::cout << "PVOLMIN.y			" << m_Vec[PVOLMIN].y << std::endl;
+	std::cout << "PVOLMIN.z			" << m_Vec[PVOLMIN].z << std::endl;
+	std::cout << "PVOLMAX.x			" << m_Vec[PVOLMAX].x << std::endl;
+	std::cout << "PVOLMAX.y			" << m_Vec[PVOLMAX].y << std::endl;
+	std::cout << "PVOLMAX.z			" << m_Vec[PVOLMAX].z << std::endl;
+	std::cout << "PINITMIN.x		" << m_Vec[PINITMIN].x << std::endl;
+	std::cout << "PINITMIN.y		" << m_Vec[PINITMIN].y << std::endl;
+	std::cout << "PINITMIN.z		" << m_Vec[PINITMIN].z << std::endl;
+	std::cout << "PINITMAX.x		" << m_Vec[PINITMAX].x << std::endl;
+	std::cout << "PINITMAX.y		" << m_Vec[PINITMAX].y << std::endl;
+	std::cout << "PINITMAX.z		" << m_Vec[PINITMAX].z << std::endl;
+
 
 	TransferToCUDA ();		 // Initial transfer
 }

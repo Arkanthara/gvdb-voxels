@@ -24,9 +24,7 @@ RUN apt-get update && apt-get install -y \
 
 # RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/compat" >> ~/.bashrc
 
-RUN touch /root/.Xauthority
-RUN xauth add muguet/unix:11  MIT-MAGIC-COOKIE-1  90aec646ba8f3d39d6b04ba23f1323ce 
-
+# COPY /home/fitzwilliam/.Xauthority /root/.Xauthority
 COPY . ~/gvdb-voxels
 
 WORKDIR ~/gvdb-voxels
