@@ -18,12 +18,13 @@ RUN apt-get update && apt-get install -y \
 	xauth
 
 
-# ENV NVIDIA_VISIBLE_DEVICES all
-# ENV NVIDIA_DRIVER_CAPABILITIES all
-# ENV NVIDIA_REQUIRE_CUDA "cuda>=12.4 brand=tesla,driver>=550"
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES all
+ENV NVIDIA_REQUIRE_CUDA "cuda>=12.4 brand=tesla,driver>=550"
 
 # RUN echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/compat" >> ~/.bashrc
 
+RUN xauth add lizzy/unix:10  MIT-MAGIC-COOKIE-1  fca7d7a5b3d8a776b82dc45f0f079088
 # COPY /home/fitzwilliam/.Xauthority /root/.Xauthority
 COPY . ~/gvdb-voxels
 

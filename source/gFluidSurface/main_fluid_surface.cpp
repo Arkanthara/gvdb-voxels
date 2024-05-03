@@ -196,7 +196,7 @@ bool Sample::init()
 	mouse_down = -1;
 	gl_screen_tex = -1;
 	m_time = 0;	
-	m_simulate = true;
+	m_simulate = false;
 	m_show_gui = true;
 	m_show_fluid = true;
 	m_show_topo = true;
