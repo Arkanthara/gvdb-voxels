@@ -190,13 +190,12 @@ void FluidSystem::Start ( int num )
 	// SetupAddVolume(Vector3DF(-50, -50, -50), Vector3DF(50, 50, 50), m_Param[PSPACING], 0.1f, (int)m_Param[PNUM]);
 	SetupAddVolume(m_Vec[PINITMIN], m_Vec[PINITMAX], m_Param[PSPACING], 0.1f, (int)m_Param[PNUM]);		// increases mNumPoints
 
-	// // Compute new number of particles
-	// int new_number = (int)(
-	// 				 (m_Vec[PINITMAX].x - m_Vec[PINITMIN].x)
-	// 			   * (m_Vec[PINITMAX].y - m_Vec[PINITMIN].y)
-	// 			   * (m_Vec[PINITMAX].z - m_Vec[PINITMIN].z)
-	// 			   / m_Param[PNUM]
-	// 			   );
+	// Compute new number of particles
+	float new_number = m_Param[PNUM] / 
+					 ((m_Vec[PINITMAX].x - m_Vec[PINITMIN].x)
+				   * (m_Vec[PINITMAX].y - m_Vec[PINITMIN].y)
+				   * (m_Vec[PINITMAX].z - m_Vec[PINITMIN].z));
+	std::cout << "Ratio num particles / volume" << new_number << std::endl;
 
 	// SetupAddVolume(Vector3DF(40, 60, 40), Vector3DF(60, 80, 60), m_Param[PSPACING], 0.1f, new_number);
 
