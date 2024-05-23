@@ -126,7 +126,7 @@ void FluidSystem::Initialize ()
 	memset ( &m_FParams, 0,		sizeof(FParams) );
 	//m_Param [ PMODE ]		= RUN_VALIDATE;			// debugging
 	m_Param [ PMODE ]		= RUN_GPU_FULL;		
-	m_Param [ PEXAMPLE ]	= 2;
+	m_Param [ PEXAMPLE ]	= 3;
 	m_Param [ PGRID_DENSITY ] = 2.0;
 	m_Param [ PNUM ]		= 65536 * 128;
 
@@ -147,25 +147,25 @@ void FluidSystem::Start ( int num )
 	mNumPoints = 0;			// reset count
 	
 	SetupDefaultParams ();	
-	// SetupExampleParams ();	
+	SetupExampleParams ();	
 	m_Param[PNUM] = (float) num;	// maximum number of points
 	mMaxPoints = num;
 
-	m_Param [PGRIDSIZE] = 2*m_Param[PSMOOTHRADIUS] / m_Param[PGRID_DENSITY];
-	m_Param [PFORCE_FREQ] = 0;
-	m_Param [PFORCE_MAX] = 0;
-	m_Param [PFORCE_MIN] = 0;
+	// m_Param [PGRIDSIZE] = 2*m_Param[PSMOOTHRADIUS] / m_Param[PGRID_DENSITY];
+	// m_Param [PFORCE_FREQ] = 0;
+	// m_Param [PFORCE_MAX] = 0;
+	// m_Param [PFORCE_MIN] = 0;
 
-	m_Vec [PVOLMIN].Set(0, 0, 0);
-	m_Vec [PVOLMAX].Set(100, 100, 100);
+	// m_Vec [PVOLMIN].Set(0, 0, 0);
+	// m_Vec [PVOLMAX].Set(100, 100, 100);
 
-	m_Vec [PINITMIN].Set(0, 0, 0);
-	m_Vec [PINITMAX].Set(100, 50, 100);
+	// m_Vec [PINITMIN].Set(0, 0, 0);
+	// m_Vec [PINITMAX].Set(100, 50, 100);
 
 	// Setup stuff
 	SetupKernels ();
 
-	m_Param[ PSPACING ] = 0.0f;
+	// m_Param[ PSPACING ] = 0.0f;
 	
 	SetupSpacing ();
 
@@ -186,14 +186,14 @@ void FluidSystem::Start ( int num )
 	SetupAddVolume(m_Vec[PINITMIN], m_Vec[PINITMAX], m_Param[PSPACING], 0.1f, (int)m_Param[PNUM]);		// increases mNumPoints
 
 	// Compute new number of particles
-	int new_number = (int)(
-					 (m_Vec[PINITMAX].x - m_Vec[PINITMIN].x)
-				   * (m_Vec[PINITMAX].y - m_Vec[PINITMIN].y)
-				   * (m_Vec[PINITMAX].z - m_Vec[PINITMIN].z)
-				   / m_Param[PNUM]
-				   );
+	// int new_number = (int)(
+	// 				 (m_Vec[PINITMAX].x - m_Vec[PINITMIN].x)
+	// 			   * (m_Vec[PINITMAX].y - m_Vec[PINITMIN].y)
+	// 			   * (m_Vec[PINITMAX].z - m_Vec[PINITMIN].z)
+	// 			   / m_Param[PNUM]
+	// 			   );
 
-	SetupAddVolume(Vector3DF(40, 60, 40), Vector3DF(60, 80, 60), m_Param[PSPACING], 0.1f, new_number);
+	// SetupAddVolume(Vector3DF(40, 60, 40), Vector3DF(60, 80, 60), m_Param[PSPACING], 0.1f, new_number);
 
 	std::cout << "PGRIDSIZE			" << m_Param[PGRIDSIZE] << std::endl;
 	std::cout << "PGRID_DENSITY		" << m_Param[PGRID_DENSITY] << std::endl;
