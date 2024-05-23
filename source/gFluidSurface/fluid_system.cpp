@@ -148,8 +148,9 @@ void FluidSystem::Start ( int num )
 	
 	SetupDefaultParams ();	
 	// SetupExampleParams ();	
-	m_Param[PNUM] = (float) num;	// maximum number of points
-	mMaxPoints = num;
+	// m_Param[PNUM] = (float) num;	// maximum number of points
+	// mMaxPoints = num;
+	mMaxPoints = m_Param[PNUM];
 
 	m_Param [PGRIDSIZE] = 2*m_Param[PSMOOTHRADIUS] / m_Param[PGRID_DENSITY];
 	m_Param [PFORCE_FREQ] = 0;
@@ -159,8 +160,10 @@ void FluidSystem::Start ( int num )
 	m_Vec [PVOLMIN].Set(0, 0, 0);
 	m_Vec [PVOLMAX].Set(100, 100, 100);
 
-	m_Vec [PINITMIN].Set(0, 0, 0);
-	m_Vec [PINITMAX].Set(100, 50, 100);
+	m_Vec [PINITMIN].Set(10, 10, 10);
+	m_Vec [PINITMAX].Set(90, 50, 90);
+
+	m_Param [ PRESTDENSITY ] =	1000.0f;			// kg / m^3
 
 	// Setup stuff
 	SetupKernels ();
