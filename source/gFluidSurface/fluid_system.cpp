@@ -161,6 +161,18 @@ void FluidSystem::Start ( int num )
 
 	// m_Vec [PINITMIN].Set(0, 0, 0);
 	// m_Vec [PINITMAX].Set(100, 50, 100);
+	// int volmin = 0;
+	// int volmax = 128;
+	// int center = (int) 128 / 2;
+	// int initmin = center - 32;
+	// int initmax = center + 32;
+	// int initmin_y = center - 16;
+	// int initmax_y = center + 16;
+	// m_Vec [PVOLMIN].Set(volmin, volmin, volmin);
+	// m_Vec [PVOLMAX].Set(volmax, volmax, volmax);
+
+	// m_Vec [PINITMIN].Set(initmin, initmin_y, initmin);
+	// m_Vec [PINITMAX].Set(initmax, initmax_y, initmax);
 
 	// Setup stuff
 	SetupKernels ();
@@ -253,6 +265,16 @@ void FluidSystem::Start ( int num )
 	std::cout << "PINITMAX.x		" << m_Vec[PINITMAX].x << std::endl;
 	std::cout << "PINITMAX.y		" << m_Vec[PINITMAX].y << std::endl;
 	std::cout << "PINITMAX.z		" << m_Vec[PINITMAX].z << std::endl;
+
+	std::cout << "Real size of the volume (m) x " << (m_Vec[PVOLMAX].x - m_Vec[PVOLMIN].x) * 1 / m_Param[PSIMSCALE] <<std::endl;
+	std::cout << "Real size of the volume (m) y " << (m_Vec[PVOLMAX].y - m_Vec[PVOLMIN].y) * 1 / m_Param[PSIMSCALE] <<std::endl;
+	std::cout << "Real size of the volume (m) z " << (m_Vec[PVOLMAX].z - m_Vec[PVOLMIN].z) * 1 / m_Param[PSIMSCALE] <<std::endl;
+
+	std::cout << "Real size of the fluid (m) x " << (m_Vec[PINITMAX].x - m_Vec[PINITMIN].x) * 1 / m_Param[PSIMSCALE] <<std::endl;
+	std::cout << "Real size of the fluid (m) y " << (m_Vec[PINITMAX].y - m_Vec[PINITMIN].y) * 1 / m_Param[PSIMSCALE] <<std::endl;
+	std::cout << "Real size of the fluid (m) z " << (m_Vec[PINITMAX].z - m_Vec[PINITMIN].z) * 1 / m_Param[PSIMSCALE] <<std::endl;
+
+
 
 
 	TransferToCUDA ();		 // Initial transfer
