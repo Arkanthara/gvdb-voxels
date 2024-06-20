@@ -199,7 +199,7 @@ bool Sample::init()
 	m_simulate = true;
 	m_show_gui = true;
 	m_show_fluid = false;
-	m_show_topo = true;
+	m_show_topo = false;
 	m_use_color = true;
 	m_render_optix = false;
 	m_shade_style = 1;
@@ -506,14 +506,14 @@ void Sample::info (int id)
 void Sample::keyboardchar(unsigned char key, int mods, int x, int y)
 {
 	switch ( key ) {
-	case '`':  m_show_gui = !m_show_gui; break;
+	case '5':  m_show_gui = !m_show_gui; break;
 	case '1':  m_show_topo = !m_show_topo; break;
 	case '2':  m_show_fluid = !m_show_fluid; break;	
 	case '3':  m_shade_style = ( m_shade_style==4 ) ? 0 : m_shade_style+1; handle_gui(3, (float) m_shade_style); break;
 	case '4':  m_use_color = !m_use_color; handle_gui(4, m_use_color); break;
-	case ' ':  m_simulate = !m_simulate; break;
-	case ',': m_id--; info(m_id);  break;
-	case '.': m_id++; info(m_id);  break;
+	case 'P':  m_simulate = !m_simulate; break;
+	case 'I': m_id--; info(m_id);  break;
+	case 'i': m_id++; info(m_id);  break;
 	};
 }
 
