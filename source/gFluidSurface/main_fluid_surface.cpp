@@ -199,7 +199,7 @@ bool Sample::init()
 	m_simulate = true;
 	m_show_gui = true;
 	m_show_fluid = false;
-	m_show_topo = true;
+	m_show_topo = false;
 	m_use_color = true;
 	m_render_optix = false;
 	m_shade_style = 1;
