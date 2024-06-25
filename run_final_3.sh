@@ -24,6 +24,8 @@ echo "Timestamp,CPU_Usage(%),RAM_Usage(%),GPU_Usage(%),GPU_Memory_Usage(%)" >$ou
 (cd "$work_dir" && ./"$program" "$@") &
 pid=$!
 
+mem_total_gpu = $(nvidia-smi --query-gpu=memory.total --format=csv,noheader,nounits)
+
 # Fonction pour obtenir l'utilisation de la mémoire et du CPU
 get_cpu_usage() {
   #ps -p $pid -o %cpu,%mem --no-headers
@@ -41,7 +43,7 @@ get_ram_usage() {
 
 # Fonction pour obtenir l'utilisation du GPU et de la mémoire GPU
 get_gpu_usage() {
-  nvidia-smi --query-gpu=utilization.gpu,utilization.memory --format=csv,noheader,nounits
+  nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv,noheader,nounits
 }
 
 # Enregistrer l'utilisation des ressources toutes les secondes jusqu'à la fin du processus
@@ -53,7 +55,7 @@ while kill -0 $pid 2>/dev/null; do
   #cpu_usage=$(echo $cpu | awk '{print $1}')
   #mem_usage=$(echo $cpu | awk '{print $2}')
   gpu_usage_val=$(echo $gpu | awk -F ',' '{print $1}')
-  gpu_mem_usage=$(echo $gpu | awk -F ',' '{print $2}')
+  gpu_mem_usage=$(echo "scale=2; $(echo $gpu | awk -F ',' '{print $2}') / $mem_total_gpu * 100" | bc)
   echo "$(date +'%Y-%m-%d %H:%M:%S'),$cpu_usage,$ram_usage,$gpu_usage_val,$gpu_mem_usage" >>$output_file
   sleep 1
 done

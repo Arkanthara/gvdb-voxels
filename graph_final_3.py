@@ -26,10 +26,15 @@ plt.plot(
     df["GPU_Memory_Usage(%)"],
     label="Utilisation Mémoire GPU (%)",
 )
+plt.plot(
+    df["Seconds_Since_Start"],
+    df["GPU_Memory_Access_Usage(%)"],
+    label="Accès à la Mémoire GPU (%)",
+)
 plt.xlabel("Temps (secondes)")
 plt.ylabel("Utilisation (%)")
 plt.title(
-    "Utilisation du CPU, de la Mémoire CPU, du GPU, de la Mémoire GPU et de la RAM"
+    "Utilisation du CPU, de la Mémoire CPU, du GPU, de la Mémoire GPU, des accès à la mémoire GPU et de la RAM"
 )
 plt.legend()
 plt.grid(True)
