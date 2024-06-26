@@ -2388,6 +2388,7 @@ void FluidSystem::SetupExampleParams ()
 {
 	Vector3DF pos;
 	Vector3DF min, max;
+	int constante = 1;
 	
 	switch ( (int) m_Param[PEXAMPLE] ) {
 
@@ -2418,9 +2419,9 @@ void FluidSystem::SetupExampleParams ()
 		break;
 	case 2:		// Wave pool
 		m_Vec [ PVOLMIN ].Set (   0,   0,   0 );
-		m_Vec [ PVOLMAX ].Set (  400, 200, 400 );
-		m_Vec [ PINITMIN ].Set ( 100, 80,  100 );
-		m_Vec [ PINITMAX ].Set ( 300, 190, 300 );
+		m_Vec [ PVOLMAX ].Set (  constante * 400, constante * 200, constante * 400 );
+		m_Vec [ PINITMIN ].Set ( constante * 100, constante * 80,  constante * 100 );
+		m_Vec [ PINITMAX ].Set ( constante * 300, constante * 190, constante * 300 );
 		m_Param [ PFORCE_MIN ] = 100.0f;	
 		m_Param [ PFORCE_FREQ ] = 6.0f;
 		m_Param [ PGROUND_SLOPE ] = 0.10f;
